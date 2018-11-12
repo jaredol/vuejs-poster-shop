@@ -1,23 +1,53 @@
 var PRICE = 9.99;
+var LOAD_NUM = 10;
 
 new Vue({
     el: "#app",
     data: {
         total: 0,
-        items: [
-            { id: 1, title: 'Item 1', price: 10 },
-            { id: 2, title: 'Item 2', price: 20 },
-            { id: 3, title: 'Item 3', price: 30 }
-        ],
+        items: [],
         cart: [],
-        search: ''
+        results: [],
+        newSearch: 'anime',
+        lastSearch: '',
+        loading: false,
+        price: PRICE
+        //imgSrc: items.link
+    },
+    mounted: function () {
+        this.onSubmit();
+
+        var vueInstance = this;
+        var elem = document.getElementById('product-list-bottom');
+        var watcher = scrollMonitor.create(elem);
+        watcher.enterViewport(function () {
+            console.log('entered viewport');
+            vueInstance.appendItems();
+        });
+    },
+    filters: {
+        currency: function (price) {
+            return '$'.concat(price.toFixed(2));
+        }
     },
     methods: {
+        appendItems: function () {
+            if (this.items.length < this.results.length) {
+                var append = this.results.slice(this.items.length, this.items.length + LOAD_NUM);
+                this.items = this.items.concat(append);
+            }
+
+        },
         onSubmit: function () {
+            this.loading = true;
+            this.items = [];
             this.$http
-                .get('/search/'.concat(this.search))
+                .get('/search/'.concat(this.newSearch))
                 .then(function (res) {
-                    console.log(res.body[0].title);
+                    this.lastSearch = this.newSearch;
+                    this.results = res.data;
+                    this.appendItems();
+                    this.loading = false;
                 });
         },
         addItem: function (index) {
@@ -36,12 +66,13 @@ new Vue({
 
             // if not found
             if (!found) {
+                console.log('if not');
                 this.cart.push({
                     id: item.id,
                     title: item.title,
                     qty: 1,
-                    price: item.price
-                })
+                    price: PRICE
+                });
             }
         },
 
@@ -62,10 +93,8 @@ new Vue({
             }
         }
 
-    },
-    filters: {
-        currency: function (price) {
-            return '$'.concat(price.toFixed(2));
-        }
     }
+
 });
+
+
