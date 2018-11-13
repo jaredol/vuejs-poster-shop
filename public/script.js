@@ -93,6 +93,11 @@ new Vue({
             }
         }
 
+    },
+    computed: {
+        noMoreItems() {
+            return this.items.length === this.results.length && this.results.length > 0
+        }
     }
 
 });

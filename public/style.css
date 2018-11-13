@@ -24,7 +24,8 @@ button:focus, input:focus {
 }
 
 [v-cloak] {
-    display: none !important;
+    /* display: none !important; */
+    opacity: 0;
 }
 
 .fade-enter-active {

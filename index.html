@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" v-cloak>
         <div class="header">
             <h1>Vue.js Poster Store</h1>
             <form action="" class="searchbar" v-on:submit.prevent="onSubmit">
@@ -41,8 +41,8 @@
                         <button @click="addItem(i)" class="add-to-cart btn">Add to cart</button>
                     </div>
                 </div>
-                <div id="product-list-bottom" style="height: 44px; background-color: dodgerblue">
-                    <div v-if="items.length === results.length && results.length > 0">No more items</div>
+                <div id="product-list-bottom">
+                    <div v-if="noMoreItems">No more items</div>
                 </div>
             </div>
             <div class="cart">
